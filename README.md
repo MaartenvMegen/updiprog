@@ -1,5 +1,16 @@
 # updiprog
 
+## Getting things to run
+This is a Cmake project. To get things running execute the following commands:
+```
+mkdir build
+cd build
+cmake -DCMAKE_TOOLCHAIN_FILE=../cross_compile.txt ..
+make
+```
+This should configure cmake for crosscompiling to arm using the crosscompiler specified in cross_compile.txt
+
+## Documentation by original author
 This is C version of UPDI interface utility with improvements, you could refer to the Python version: [pyupdi](https://github.com/mraardvark/pyupdi.git)
 	
 pyupdi is a Python utility for programming AVR devices with UPDI interface using a standard TTL serial port.

@@ -22,6 +22,8 @@ static HANDLE hSerial;
 static int fd;
 #endif
 
+static int         _fd = -1;
+
 char *array_to_str(char * str, uint8_t *array, unsigned int n) {
   int r;
   if (n == 0) return 0;
@@ -210,17 +212,26 @@ int COM_Read(uint8_t *data, uint16_t len)
   ReadFile(hSerial, data, len, &dwBytesRead, NULL);
   #endif
   #ifdef __linux
-  int dwBytesRead;
-  usleep(80000);
-  dwBytesRead = read(fd, data, len);
-  if (dwBytesRead < 0)
-    LOG_Print(LOG_LEVEL_INFO, "COM_Read(-1)");
-    return -1;
-  #endif
-
+  // give system some time to settle before starting a read
+  usleep(20000);
   LOG_Print(LOG_LEVEL_INFO, "COM_Read(%s)", array_to_str(buf, data, len));
+  int byte_cnt = 0;
+  LOG_Print(LOG_LEVEL_INFO,"Attempting to receive %u bytes", len);
+  while (len) {
+      int ret = read(_fd, data, 1);
+      if (ret <= 0) {
+        LOG_Print(LOG_LEVEL_WARNING,"failure receiving every byte");
+        return false;
+      } 
+      LOG_Print(LOG_LEVEL_INFO,"received: %X", data[0]);
+      len -= ret;
+      data += ret;
+      byte_cnt += 1;
+    }
 
-  return dwBytesRead;
+  LOG_Print(LOG_LEVEL_INFO,"receive succesfull");
+  return byte_cnt;
+  #endif
 }
 
 /** \brief Calculate time for transmission with current baudrate
