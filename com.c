@@ -12,6 +12,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
+#include <string.h>
+#include "log.h"
 
 #ifdef __MINGW32__
 static HANDLE hSerial;
@@ -19,6 +21,15 @@ static HANDLE hSerial;
 #ifdef __linux
 static int fd;
 #endif
+
+char *array_to_str(char * str, uint8_t *array, unsigned int n) {
+  int r;
+  if (n == 0) return 0;
+  if (n == 1) r = sprintf(str, "%X", array[0]);
+  else        r = sprintf(str, "%X, ", array[0]);
+  array_to_str(str + r, array + 1, n - 1);
+  return str;
+}
 
 static uint32_t COM_Baudrate = 115200;
 
@@ -35,6 +46,7 @@ bool COM_Open(char *port, uint32_t baudrate, bool have_parity, bool two_stopbits
 {
   printf("Opening %s at %u baud\n", port, baudrate);
   COM_Baudrate = baudrate;
+
   #ifdef __MINGW32__
   char str[64];
   uint8_t multiplier;
@@ -69,7 +81,6 @@ bool COM_Open(char *port, uint32_t baudrate, bool have_parity, bool two_stopbits
   SetCommTimeouts(hSerial, &timeouts);
   //COM_Bytes = 0;
   #endif
-
   #ifdef __linux
   fd = open(port, O_RDWR | O_NOCTTY );
   if (fd <0)
@@ -129,6 +140,8 @@ bool COM_Open(char *port, uint32_t baudrate, bool have_parity, bool two_stopbits
  */
 int COM_Write(uint8_t *data, uint16_t len)
 {
+  char buf[128];
+  LOG_Print(LOG_LEVEL_INFO, "COM_Write(%s)", array_to_str(buf, data, len));
   #ifdef __MINGW32__
   DWORD dwBytesWritten = 0;
   //DWORD signal;
@@ -164,14 +177,18 @@ int COM_Write(uint8_t *data, uint16_t len)
  * \return number of received bytes as int
  *
  */
+
 int COM_Read(uint8_t *data, uint16_t len)
 {
+  char buf[128];
+
   #ifdef __MINGW32__
   //OVERLAPPED ov = { 0 };
   //COMSTAT status;
   //DWORD errors;
   //DWORD mask, btr, temp, signal;
   DWORD dwBytesRead = 0;
+  msleep(80);
 //  ClearCommError(hSerial, &errors, &status);
 //  if (!ReadFile(hSerial, data, len, &dwBytesRead, &ov))
 //    return -1;
@@ -193,10 +210,15 @@ int COM_Read(uint8_t *data, uint16_t len)
   ReadFile(hSerial, data, len, &dwBytesRead, NULL);
   #endif
   #ifdef __linux
-  int dwBytesRead = read(fd, data, len);
+  int dwBytesRead;
+  usleep(80000);
+  dwBytesRead = read(fd, data, len);
   if (dwBytesRead < 0)
+    LOG_Print(LOG_LEVEL_INFO, "COM_Read(-1)");
     return -1;
   #endif
+
+  LOG_Print(LOG_LEVEL_INFO, "COM_Read(%s)", array_to_str(buf, data, len));
 
   return dwBytesRead;
 }
