@@ -20,8 +20,8 @@
 #define COMPORT_LEN     (32)
 #define FUSES_LEN       (128)
 
-#define SW_VER_NUMBER   "0.7"
-#define SW_VER_DATE     "07.03.2022"
+#define SW_VER_NUMBER   "0.8"
+#define SW_VER_DATE     "08.03.2022"
 
 typedef struct
 {

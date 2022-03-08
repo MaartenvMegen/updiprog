@@ -142,7 +142,8 @@ bool COM_Open(char *port, uint32_t baudrate, bool have_parity, bool two_stopbits
  */
 int COM_Write(uint8_t *data, uint16_t len)
 {
-  char buf[128];
+  usleep(5000);
+  char buf[512];
   LOG_Print(LOG_LEVEL_INFO, "COM_Write(%s)", array_to_str(buf, data, len));
   #ifdef __MINGW32__
   DWORD dwBytesWritten = 0;
@@ -167,8 +168,11 @@ int COM_Write(uint8_t *data, uint16_t len)
   int iOut = write(fd, data, len);
   if (iOut < 0)
     return -1;
-  #endif
 
+
+  #endif
+  
+   
   return 0;
 }
 
@@ -180,9 +184,14 @@ int COM_Write(uint8_t *data, uint16_t len)
  *
  */
 
+
+
 int COM_Read(uint8_t *data, uint16_t len)
 {
-  char buf[128];
+  usleep(5000);
+  char buf[512];
+  
+  
 
   #ifdef __MINGW32__
   //OVERLAPPED ov = { 0 };
@@ -190,7 +199,7 @@ int COM_Read(uint8_t *data, uint16_t len)
   //DWORD errors;
   //DWORD mask, btr, temp, signal;
   DWORD dwBytesRead = 0;
-  msleep(80);
+
 //  ClearCommError(hSerial, &errors, &status);
 //  if (!ReadFile(hSerial, data, len, &dwBytesRead, &ov))
 //    return -1;
@@ -212,24 +221,39 @@ int COM_Read(uint8_t *data, uint16_t len)
   ReadFile(hSerial, data, len, &dwBytesRead, NULL);
   #endif
   #ifdef __linux
-  // give system some time to settle before starting a read
-  usleep(20000);
-  LOG_Print(LOG_LEVEL_INFO, "COM_Read(%s)", array_to_str(buf, data, len));
-  int byte_cnt = 0;
-  LOG_Print(LOG_LEVEL_INFO,"Attempting to receive %u bytes", len);
-  while (len) {
-      int ret = read(_fd, data, 1);
-      if (ret <= 0) {
-        LOG_Print(LOG_LEVEL_WARNING,"failure receiving every byte");
-        return false;
-      } 
-      LOG_Print(LOG_LEVEL_INFO,"received: %X", data[0]);
-      len -= ret;
-      data += ret;
-      byte_cnt += 1;
-    }
 
-  LOG_Print(LOG_LEVEL_INFO,"receive succesfull");
+  // Variables
+  uint16_t bytes_remaining;
+  int byte_cnt=0;
+  int ret;
+
+  // give system some time to settle before starting a read
+  // 
+  LOG_Print(LOG_LEVEL_INFO, "Trying to read %u bytes", len);
+  
+  // Copy len to remainting bytes to read var
+  bytes_remaining = len;
+
+  while (bytes_remaining) {
+
+      // Try and read a single byte on the current position in the recieve buffer
+      ret = read(fd, &data[byte_cnt], 1);
+
+      // Check number of bytes that have been read(ret)
+      if (ret <= 0) {
+        LOG_Print(LOG_LEVEL_WARNING,"Read fail byte %u, return code: %u, read bytes sofar(%s)", byte_cnt, ret, array_to_str(buf, data, byte_cnt));
+        return false;
+      }
+      if (ret>1){
+        LOG_Print(LOG_LEVEL_WARNING,"Read more than one byte!?(%u)", ret);
+      }
+
+      bytes_remaining -=ret;      
+      byte_cnt += ret;
+  }
+
+  LOG_Print(LOG_LEVEL_INFO, "COM_Read(%s)", array_to_str(buf, data, byte_cnt)); 
+  
   return byte_cnt;
   #endif
 }
