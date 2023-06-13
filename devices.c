@@ -87,7 +87,7 @@ tDevice DEVICES_List[] =
     0x1300,
     9
   },
-  { 
+  {
     "tiny80x",
     0x8000,
     8 * 1024,
@@ -113,7 +113,7 @@ tDevice DEVICES_List[] =
   },
   {
                  /*Parameter        : Value   : Different from attiny81x? : Source datasheet chapter*/
-    "tiny82x",   /*Name             : tiny82x : Yes                       : N.A. */                
+    "tiny82x",   /*Name             : tiny82x : Yes                       : N.A. */
     0x8000,      /*Flash_start      : 0x8000  : No                        : 7.3   */
     8 * 1024,    /*Flash_size       : 8KB     : No                        : 7.3   */
     64,          /*Flash_page_size  : 64B     : No                        : 7.3   */
@@ -124,7 +124,20 @@ tDevice DEVICES_List[] =
     0x1300,      /*Userrow_address  : 0x1300  : No                        : 8.1   */
     8            /*number of fuses  : 0x08    : Yes                       : 7.8.1 */
   },
-  { 
+   {
+                 /*Parameter        : Value   : Different from attiny81x? : Source datasheet chapter*/
+    "tiny162x",   /*Name            : tiny82x : Yes                       : N.A. */
+    0x8000,      /*Flash_start      : 0x8000  : No                        : 7.3   */
+    16 * 1024,    /*Flash_size      : 16KB    : Yes                       : 7.3   */
+    64,          /*Flash_page_size  : 64B     : No                        : 7.3   */
+    0x0F00,      /*Syscfg_address   : 0xF000  : No                        : 8.1   */
+    0x1000,      /*Nvmctrl_address  : 0x1000  : No                        : 8.1   */
+    0x1100,      /*Sigrow_address   : 0x1100  : No                        : 8.1   */
+    0x1280,      /*Fuses_address    : 0x1280  : No                        : 8.1   */
+    0x1300,      /*Userrow_address  : 0x1300  : No                        : 8.1   */
+    8            /*number of fuses  : 0x08    : Yes                       : 7.8.1 */
+  },
+  {
     "tiny40x",
     0x8000,
     4 * 1024,
