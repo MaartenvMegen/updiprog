@@ -15,12 +15,14 @@
 #include <string.h>
 #include "log.h"
 
+#define  __linux
 #ifdef __MINGW32__
 static HANDLE hSerial;
 #endif
 #ifdef __linux
 static int fd;
 #endif
+
 
 static int         _fd = -1;
 
@@ -46,7 +48,7 @@ static uint32_t COM_Baudrate = 115200;
  */
 bool COM_Open(char *port, uint32_t baudrate, bool have_parity, bool two_stopbits)
 {
-  printf("Opening %s at %u baud\n", port, baudrate);
+  //printf("Opening %s at %u baud\n", port, baudrate);
   COM_Baudrate = baudrate;
 
   #ifdef __MINGW32__
@@ -96,6 +98,12 @@ bool COM_Open(char *port, uint32_t baudrate, bool have_parity, bool two_stopbits
       cfsetispeed(&SerialPortSettings, B300);
       cfsetospeed(&SerialPortSettings, B300);
       break;
+
+    case 4800:
+      cfsetispeed(&SerialPortSettings, B4800);
+      cfsetospeed(&SerialPortSettings, B4800);
+      break;
+
     case 9600:
       cfsetispeed(&SerialPortSettings, B9600);
       cfsetospeed(&SerialPortSettings, B9600);
@@ -142,7 +150,7 @@ bool COM_Open(char *port, uint32_t baudrate, bool have_parity, bool two_stopbits
  */
 int COM_Write(uint8_t *data, uint16_t len)
 {
-  usleep(5000);
+  usleep(4000);
   char buf[512];
   LOG_Print(LOG_LEVEL_INFO, "COM_Write(%s)", array_to_str(buf, data, len));
   #ifdef __MINGW32__
@@ -171,8 +179,8 @@ int COM_Write(uint8_t *data, uint16_t len)
 
 
   #endif
-  
-   
+
+
   return 0;
 }
 
@@ -228,9 +236,9 @@ int COM_Read(uint8_t *data, uint16_t len)
   int ret;
 
   // give system some time to settle before starting a read
-  // 
+  //
   LOG_Print(LOG_LEVEL_INFO, "Trying to read %u bytes", len);
-  
+
   // Copy len to remainting bytes to read var
   bytes_remaining = len;
 
@@ -248,12 +256,12 @@ int COM_Read(uint8_t *data, uint16_t len)
         LOG_Print(LOG_LEVEL_WARNING,"Read more than one byte!?(%u)", ret);
       }
 
-      bytes_remaining -=ret;      
+      bytes_remaining -=ret;
       byte_cnt += ret;
   }
 
-  LOG_Print(LOG_LEVEL_INFO, "COM_Read(%s)", array_to_str(buf, data, byte_cnt)); 
-  
+  LOG_Print(LOG_LEVEL_INFO, "COM_Read(%s)", array_to_str(buf, data, byte_cnt));
+
   return byte_cnt;
   #endif
 }
@@ -287,7 +295,7 @@ void COM_WaitForTransmit(void)
  */
 void COM_Close(void)
 {
-  printf("Closing COM port\n");
+  //printf("Closing COM port\n");
   #ifdef __MINGW32__
   CloseHandle(hSerial);
   #endif

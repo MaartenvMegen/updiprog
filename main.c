@@ -252,12 +252,14 @@ int main(int argc, char* argv[])
     return -1;
   }
 
+  // Link init, port is opened here
   if (LINK_Init(parameters.port, parameters.baudrate, false) == false)
   {
     printf("Can't open port: %s\nPlease check connection and try again.\n", parameters.port);
     return -1;
   }
 
+  // Enter programming mode
   if (NVM_EnterProgmode() == false)
   {
     printf("Can't enter programming mode, exiting\n");
@@ -327,6 +329,7 @@ int main(int argc, char* argv[])
   }
 
   NVM_LeaveProgmode();
+  printf("Closing com port");
   PHY_Close();
 
   return 0;

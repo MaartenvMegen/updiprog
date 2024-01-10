@@ -3,6 +3,8 @@
 #include "phy.h"
 #include "updi.h"
 
+
+
 /** \brief
  *
  * \param
@@ -86,22 +88,30 @@ bool LINK_Init(char *port, uint32_t baudrate, bool onDTR)
   //Create a UPDI physical connection
   if (PHY_Init(port, baudrate, onDTR) == false)
     return false;
-  byte = UPDI_BREAK;
-  PHY_Send(&byte, sizeof(uint8_t));
-  while (err-- > 0)
+
+  //Send break at 4800 baudrate
+  PHY_DoBreak(port, 4800);
+
+  while (err > 0)
   {
     LINK_Start();
     //Check answer
     if (LINK_Check() == true)
       return true;
     //Send double break if all is not well, and re-check
-    if (PHY_DoBreak(port) == false)
-    {
-      LOG_Print(LOG_LEVEL_ERROR, "UPDI initialisation failed");
-      return false;
+
+    switch (err){
+        case 0:
+        case 3:
+            PHY_DoBreak(port, 4800);
+            break;
+        case 2:
+        case 1:
+            PHY_DoBreak(port, 300);
+            break;
     }
-    if (PHY_Init(port, baudrate, onDTR) == false)
-      return false;
+
+    err--;
   }
   return false;
 }

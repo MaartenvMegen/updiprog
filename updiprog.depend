@@ -1,0 +1,131 @@
+# depslib dependency file v1.0
+1686663774 source:c:\users\michiel.cnossen\updiprog_linux\app.c
+	<stdio.h>
+	<unistd.h>
+	"devices.h"
+	"link.h"
+	"log.h"
+	"sleep.h"
+	"updi.h"
+
+1686663774 c:\users\michiel.cnossen\updiprog_linux\devices.h
+	<stdint.h>
+
+1686663774 c:\users\michiel.cnossen\updiprog_linux\link.h
+	<stdint.h>
+	<stdbool.h>
+
+1686663774 c:\users\michiel.cnossen\updiprog_linux\log.h
+	<stdint.h>
+
+1686663775 c:\users\michiel.cnossen\updiprog_linux\sleep.h
+	<stdint.h>
+	<stdbool.h>
+	<windows.h>
+	<unistd.h>
+	<unistd.h>
+
+1686663775 c:\users\michiel.cnossen\updiprog_linux\updi.h
+
+1686663775 source:c:\users\michiel.cnossen\updiprog_linux\com.c
+	<windows.h>
+	<winbase.h>
+	<sys/types.h>
+	<fcntl.h>
+	<termios.h>
+	<unistd.h>
+	<stdio.h>
+	<stdint.h>
+	<stdbool.h>
+	<math.h>
+	<string.h>
+	"log.h"
+
+1686664451 source:c:\users\michiel.cnossen\updiprog_linux\devices.c
+	<string.h>
+	"devices.h"
+
+1686663774 source:c:\users\michiel.cnossen\updiprog_linux\ihex.c
+	<stdio.h>
+	<ctype.h>
+	<string.h>
+	"ihex.h"
+
+1686663774 c:\users\michiel.cnossen\updiprog_linux\ihex.h
+	<stdint.h>
+	<stdio.h>
+	<stdbool.h>
+
+1686663774 source:c:\users\michiel.cnossen\updiprog_linux\link.c
+	<string.h>
+	"log.h"
+	"phy.h"
+	"updi.h"
+
+1686663775 c:\users\michiel.cnossen\updiprog_linux\phy.h
+	<stdint.h>
+	<stdbool.h>
+
+1686663774 source:c:\users\michiel.cnossen\updiprog_linux\log.c
+	<stdio.h>
+	<stdarg.h>
+	"log.h"
+
+1686663775 source:c:\users\michiel.cnossen\updiprog_linux\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdint.h>
+	<stdbool.h>
+	<limits.h>
+	<unistd.h>
+	"devices.h"
+	"link.h"
+	"log.h"
+	"nvm.h"
+	"phy.h"
+
+1686663774 c:\users\michiel.cnossen\updiprog_linux\nvm.h
+	<stdint.h>
+	<stdbool.h>
+
+1686663774 source:c:\users\michiel.cnossen\updiprog_linux\nvm.c
+	<stdlib.h>
+	<string.h>
+	"app.h"
+	"devices.h"
+	"ihex.h"
+	"link.h"
+	"log.h"
+	"nvm.h"
+	"progress.h"
+	"updi.h"
+
+1686663774 c:\users\michiel.cnossen\updiprog_linux\app.h
+	<stdint.h>
+	<stdbool.h>
+
+1686663775 c:\users\michiel.cnossen\updiprog_linux\progress.h
+	<stdint.h>
+	<stdbool.h>
+
+1686663774 source:c:\users\michiel.cnossen\updiprog_linux\phy.c
+	<unistd.h>
+	"com.h"
+	"log.h"
+	"phy.h"
+	"updi.h"
+	"sleep.h"
+
+1686663774 c:\users\michiel.cnossen\updiprog_linux\com.h
+	<stdint.h>
+	<stdbool.h>
+
+1686663775 source:c:\users\michiel.cnossen\updiprog_linux\progress.c
+	<stdio.h>
+	<string.h>
+	"progress.h"
+
+1686663775 source:c:\users\michiel.cnossen\updiprog_linux\sleep.c
+	"sleep.h"
+

@@ -5,6 +5,9 @@
 #include "updi.h"
 #include "sleep.h"
 
+uint32_t baudrate_setting  =9600;
+uint8_t retries = 0;
+
 /** \brief Initialize physical interface
  *
  * \param [in] port Port name as string
@@ -15,6 +18,9 @@
  */
 bool PHY_Init(char *port, uint32_t baudrate, bool onDTR)
 {
+  baudrate_setting=baudrate;
+  retries=0;
+  LOG_Print(LOG_LEVEL_INFO, "Initializing phy %s at %u baud\n", port, baudrate);
   return COM_Open(port, baudrate, true, true);
 }
 
@@ -27,26 +33,27 @@ bool PHY_Init(char *port, uint32_t baudrate, bool onDTR)
  * \return true if success
  *
  */
-bool PHY_DoBreak(char *port)
+bool PHY_DoBreak(char *port, uint32_t baudrate)
 {
   uint8_t buf[] = {UPDI_BREAK, UPDI_BREAK};
+  LOG_Print(LOG_LEVEL_INFO, "Sending double break @ %u", baudrate);
 
-  LOG_Print(LOG_LEVEL_INFO, "Sending double break");
+
   COM_Close();
-  // Re-init at a lower baudrate
-  // At 300 bauds, the break character will pull the line low for 30ms
-  // Which is slightly above the recommended 24.6ms
-  // no parity, one stop bit
-  if (COM_Open(port, 300, false, false) != true)
+  if (COM_Open(port, baudrate, false, false) != true)
     return false;
   // Send two break characters, with 1 stop bit in between
   COM_Write(buf, sizeof(buf));
+
   // Wait for the double break end
-  msleep(1000);  // wait for 1 second
+  msleep(10);  // wait for 10mS second
   if (COM_Read(buf, 2) != 2)
     LOG_Print(LOG_LEVEL_WARNING, "No answer received");
 
   COM_Close();
+
+  // Re open port at original baudrate setting.
+  COM_Open(port, baudrate_setting, false, false);
 
   return true;
 }
