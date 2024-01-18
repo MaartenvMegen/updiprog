@@ -89,27 +89,18 @@ bool LINK_Init(char *port, uint32_t baudrate, bool onDTR)
   if (PHY_Init(port, baudrate, onDTR) == false)
     return false;
 
-  //Send break at 4800 baudrate
-  PHY_DoBreak(port, 4800);
+  PHY_DoBreak(port);
+  APP_Reset(true);
+  LINK_Start();
 
   while (err > 0)
   {
+    LOG_Print(LOG_LEVEL_INFO, "Err %d", err);
     LINK_Start();
     //Check answer
-    if (LINK_Check() == true)
-      return true;
+    if (LINK_Check() == true) return true;
     //Send double break if all is not well, and re-check
 
-    switch (err){
-        case 0:
-        case 3:
-            PHY_DoBreak(port, 4800);
-            break;
-        case 2:
-        case 1:
-            PHY_DoBreak(port, 300);
-            break;
-    }
 
     err--;
   }

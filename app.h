@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-bool APP_EnterProgmode(void);
+bool APP_EnterProgmode(bool verifyKey);
 void APP_LeaveProgmode(void);
 bool APP_WaitFlashReady(void);
 bool APP_Unlock(void);

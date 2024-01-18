@@ -33,20 +33,22 @@ bool PHY_Init(char *port, uint32_t baudrate, bool onDTR)
  * \return true if success
  *
  */
-bool PHY_DoBreak(char *port, uint32_t baudrate)
+bool PHY_DoBreak(char *port)
 {
   uint8_t buf[] = {UPDI_BREAK, UPDI_BREAK};
-  LOG_Print(LOG_LEVEL_INFO, "Sending double break @ %u", baudrate);
+  uint32_t breakbaudrate=300;
 
+  LOG_Print(LOG_LEVEL_INFO, "Sending double break @ %u", breakbaudrate);
 
   COM_Close();
-  if (COM_Open(port, baudrate, false, false) != true)
+  if (COM_Open(port, breakbaudrate, false, false) != true)
     return false;
+
   // Send two break characters, with 1 stop bit in between
   COM_Write(buf, sizeof(buf));
 
   // Wait for the double break end
-  msleep(10);  // wait for 10mS second
+  //msleep(10);  // wait for 10mS second
   if (COM_Read(buf, 2) != 2)
     LOG_Print(LOG_LEVEL_WARNING, "No answer received");
 
@@ -75,7 +77,7 @@ bool PHY_Send(uint8_t *data, uint8_t len)
   }*/
   COM_Write(data, len);
   // read echo
-  //usleep(10);
+  usleep(12);
   //msleep(COM_GetTransTime(len));
   //Sleep(10);
 

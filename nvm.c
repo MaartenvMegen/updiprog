@@ -27,10 +27,13 @@ bool NVM_GetDeviceInfo(void)
  * \return true if succeed
  *
  */
-bool NVM_EnterProgmode(void)
+bool NVM_EnterProgmode()
 {
   LOG_Print(LOG_LEVEL_INFO, "Entering NVM programming mode");
-  NVM_Progmode = APP_EnterProgmode();
+
+  APP_EnterProgmode(false);
+  NVM_Progmode = APP_EnterProgmode(true);
+
   return NVM_Progmode;
 }
 

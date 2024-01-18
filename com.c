@@ -173,13 +173,11 @@ int COM_Write(uint8_t *data, uint16_t len)
 //  return res;
   #endif
   #ifdef __linux
+  tcflush(fd, TCIOFLUSH);
   int iOut = write(fd, data, len);
   if (iOut < 0)
     return -1;
-
-
   #endif
-
 
   return 0;
 }
@@ -198,8 +196,8 @@ int COM_Read(uint8_t *data, uint16_t len)
 {
   usleep(5000);
   char buf[512];
-  
-  
+
+
 
   #ifdef __MINGW32__
   //OVERLAPPED ov = { 0 };

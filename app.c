@@ -45,16 +45,18 @@ bool APP_WaitUnlocked(uint16_t timeout_ms)
   return false;
 }
 
-bool APP_EnterProgmode(void)
+bool APP_EnterProgmode(bool verifyKey)
 {
   //Enters into NVM programming mode
   uint8_t key_status;
 
-  //First check if NVM is already enabled
-  if (APP_InProgMode() == true)
-  {
-    LOG_Print(LOG_LEVEL_WARNING, "Already in NVM programming mode");
-    return true;
+  if (verifyKey){
+    //First check if NVM is already enabled
+    if (APP_InProgMode() == true)
+    {
+     LOG_Print(LOG_LEVEL_WARNING, "Already in NVM programming mode");
+     return true;
+    }
   }
 
   LOG_Print(LOG_LEVEL_WARNING, "Entering NVM programming mode");
@@ -63,18 +65,21 @@ bool APP_EnterProgmode(void)
   LINK_SendKey(UPDI_KEY_NVM, UPDI_KEY_64);
 
   // Check key status
-  key_status = LINK_ldcs(UPDI_ASI_KEY_STATUS);
-  LOG_Print(LOG_LEVEL_INFO, "Key status = 0x%02X", key_status);
+  if (verifyKey){
+      key_status = LINK_ldcs(UPDI_ASI_KEY_STATUS);
+      LOG_Print(LOG_LEVEL_INFO, "Key status = 0x%02X", key_status);
 
-  if (!(key_status & (1 << UPDI_ASI_KEY_STATUS_NVMPROG)))
-  {
-    LOG_Print(LOG_LEVEL_WARNING, "Key not accepted");
-    return false;
+      if (!(key_status & (1 << UPDI_ASI_KEY_STATUS_NVMPROG)))
+      {
+        LOG_Print(LOG_LEVEL_WARNING, "Key not accepted");
+        return false;
+      }
   }
 
   // Toggle reset
   APP_Reset(true);
   APP_Reset(false);
+
 
   // And wait for unlock
   if (!APP_WaitUnlocked(100))

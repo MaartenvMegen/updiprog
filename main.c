@@ -262,8 +262,9 @@ int main(int argc, char* argv[])
   // Enter programming mode
   if (NVM_EnterProgmode() == false)
   {
-    printf("Can't enter programming mode, exiting\n");
+    printf("Can't enter programming mode, exiting..\n");
     return -1;
+
   }
 
   printf("Working with device: %s\n", DEVICES_GetNameByNumber(parameters.device));
