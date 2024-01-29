@@ -1,3 +1,0 @@
-/mnt/c/users/michiel.cnossen/updiprog_linux/bin/CMakeFiles/rebuild_cache.dir
-/mnt/c/users/michiel.cnossen/updiprog_linux/bin/CMakeFiles/edit_cache.dir
-/mnt/c/users/michiel.cnossen/updiprog_linux/bin/CMakeFiles/updiprog.dir
